@@ -49,8 +49,8 @@ void drawCoordinate(float *ex_mat, const float &Sfx, const float &Sfy, const flo
 }
 
 int main() {
-  Mat marker = cv::imread("Isetta.png");
-  Mat img = cv::imread("10.png");
+  Mat marker = cv::imread("img/Isetta.png");
+  Mat img = cv::imread("img/10.png");
   if(!marker.data ) {
     cout <<  "Could not open marker" << std::endl ;
     return -1;

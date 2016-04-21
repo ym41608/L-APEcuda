@@ -250,7 +250,7 @@ const int numPoses) {
   float miny = min(c1y, min(c2y, min(c3y, c4y)));
   float maxy = max(c1y, max(c2y, max(c3y, c4y)));
   if ((minx < 0) | (maxx >= imgDim.x) | (miny < 0) | (maxy >= imgDim.y)) {
-    Eas[Idx] = FLT_MAX;
+    Eas[Idx] = 100.0;
     return;
   }
 
@@ -342,7 +342,7 @@ const int numPoses) {
   float miny = min(c1y, min(c2y, min(c3y, c4y)));
   float maxy = max(c1y, max(c2y, max(c3y, c4y)));
   if ((minx < 0) | (maxx >= imgDim.x) | (miny < 0) | (maxy >= imgDim.y)) {
-    Eas[Idx] = FLT_MAX;
+    Eas[Idx] = 100.0;
     return;
   }
 

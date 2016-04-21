@@ -19,6 +19,7 @@
 *.mex*
 *.dSYM
 *.user
+testAPE
 
 # Common data/binary directories
 test

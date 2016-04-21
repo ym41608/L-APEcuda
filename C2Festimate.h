@@ -2,7 +2,7 @@
 #define C2F_H
 
 #include <opencv2/core/cuda_devptrs.hpp>
-#include <thrust/device_vector.h>
+#include <vector_types.h>
 #include "parameter.h"
 
 using namespace cv;
