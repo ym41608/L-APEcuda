@@ -25,15 +25,6 @@ float getTVperNN(const gpu::PtrStepSz<float> &img, const int &w, const int &h) {
   return thrust::reduce(variance.begin(), variance.end());
 }
 
-//void bindImgtoTex(const gpu::PtrStepSz<float4> img, const int& w, const int &h) {
-//  tex_imgYCrCb.addressMode[0] = cudaAddressModeBorder;
-//  tex_imgYCrCb.addressMode[1] = cudaAddressModeBorder;
-//  tex_imgYCrCb.filterMode = cudaFilterModePoint;
-//  tex_imgYCrCb.normalized = false;
-//  cudaChannelFormatDesc desc = cudaCreateChannelDesc<float4>();
-//  cudaBindTexture2D(0, &tex_imgYCrCb, img.data, &desc, w, h, img.step);
-//}
-
 __global__
 void variance_kernel(float* variance, const gpu::PtrStepSz<float> imgptr, const int2 dim) {
   
@@ -42,10 +33,8 @@ void variance_kernel(float* variance, const gpu::PtrStepSz<float> imgptr, const 
   const int tid = tidy*BLOCK_W + tidx;
   const int x = blockIdx.x*BLOCK_W + tidx;
   const int y = blockIdx.y*BLOCK_H + tidy;
-  
-  if (x < 0 || x >= dim.x || y < 0 || y >= dim.y)
-    return;
 
+  // shared memory
   const int wW = BLOCK_W + 2;
   const int wH = BLOCK_H + 2;
   const int wSize = wW*wH;
@@ -64,17 +53,24 @@ void variance_kernel(float* variance, const gpu::PtrStepSz<float> imgptr, const 
   }
   __syncthreads();
   
+  // out of range
+  if (x >= dim.x || y >= dim.y)
+    return;
+  
   // find max
   float max = 0;
   float value = imgptr(y, x);
-  for (int idy = tidy; idy < tidy + 3; idy++)
+  int windowIdx = tidy*wW + tidx;
+  for (int idy = tidy; idy < tidy + 3; idy++) {
     for (int idx = tidx; idx < tidx + 3; idx++) {
-      int id = idy*wW + idx;
-      if (window[id] != 2) {
-        float diff = abs(value - window[id]);
+      float tmp = window[windowIdx++];
+      if (tmp != 2) {
+        float diff = abs(value - tmp);
         if (diff > max)
           max = diff;
       }
     }
+    windowIdx += (BLOCK_W - 1);
+  }
   variance[y*dim.x + x] = max;
 }
