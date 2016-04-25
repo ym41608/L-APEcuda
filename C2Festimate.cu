@@ -12,6 +12,7 @@
 #include "getPoses.h"
 #include "expandPoses.h"
 #include "device_common.h"
+//#include <cuda_profiler_api.h>
 
 using namespace cv;
 using namespace std;
@@ -441,7 +442,6 @@ void getExMat(float *ex_mat, const float4 &P4, const float2 &P2) {
 }
 
 void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gpu::PtrStepSz<float4> &img_d, parameter* para, const bool &photo, const bool &verbose) {
-  
   // bind texture memory
   tex_imgYCrCb.addressMode[0] = cudaAddressModeBorder;
   tex_imgYCrCb.addressMode[1] = cudaAddressModeBorder;
@@ -490,6 +490,7 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
     if ( (bestEa < 0.005) || ((level > 4) && (bestEa < 0.015)) || ((level > 3) && (bestEa > mean(bestDists))) || (level > 7) ) {
       const int idx = iter - Eas.begin();
       getExMat(ex_mat, Poses4[idx], Poses2[idx]);
+      //cudaProfilerStop();
       break;
     }
     

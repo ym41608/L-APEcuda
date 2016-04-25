@@ -22,7 +22,8 @@ float getTVperNN(const gpu::PtrStepSz<float> &img, const int &w, const int &h) {
   dim3 bDim(BLOCK_W, BLOCK_H);
   dim3 gDim((w - 1)/BLOCK_W + 1, (h - 1)/BLOCK_H + 1);
   variance_kernel<<<gDim,bDim>>>(thrust::raw_pointer_cast(variance.data()), img, make_int2(w, h));
-  return thrust::reduce(variance.begin(), variance.end());
+  float TV = thrust::reduce(variance.begin(), variance.end());
+  return TV;
 }
 
 __global__

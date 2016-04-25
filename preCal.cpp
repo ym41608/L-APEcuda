@@ -5,6 +5,7 @@
 #include <iostream>
 #include "parameter.h"
 #include "preCal_kernel.h"
+//#include <cuda_profiler_api.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -35,7 +36,7 @@ double calSigmaValue(const gpu::GpuMat &marker_d, const parameter &para) {
 
 void preCal(parameter *para, gpu::GpuMat &marker_d, gpu::GpuMat &img_d, const Mat &marker, const Mat &img, 
             const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &delta, const float &tzMin, const float &tzMax, const bool &verbose) {
-   
+  //cudaProfilerStart(); 
   // dim of images
   para->mDimX = marker.cols;
   para->mDimY = marker.rows;
