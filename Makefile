@@ -1,6 +1,6 @@
 CC=g++
 NVCC=nvcc
-CFLAGS=-std=c++11 -g -O3
+CFLAGS=-std=c++11 -O3
 INCS=-I/usr/local/cuda/include
 LIBS=-L/usr/local/cuda/lib -lcudart
 
@@ -30,4 +30,5 @@ getPoses.o: getPoses.cu getPoses.h device_common.h
 expandPoses.o: expandPoses.cu expandPoses.h parameter.h device_common.h
 	$(NVCC) -c expandPoses.cu
 
-clear: rm -rf *.o testAPE
+clean: 
+	rm -rf *.o testAPE

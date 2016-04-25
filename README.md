@@ -10,4 +10,6 @@ ver2. 160421 run on tk1
 
 ver3. 160424 improve the traverse in finding maximum in preCal_kernel.cu
 
-ver4. 160425 Block Size 192 for tk1
+ver4. 160425
+  block size: 192, 8 8
+  pre-time: 1.67 s, post-time: 26.7 s

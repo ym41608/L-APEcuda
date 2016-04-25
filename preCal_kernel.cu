@@ -5,8 +5,8 @@
 #include <thrust/reduce.h>
 #include "device_common.h"
 
-#define BLOCK_W 12
-#define BLOCK_H 12
+#define BLOCK_W 8
+#define BLOCK_H 8
 #define BLOCK_SIZE1 BLOCK_W*BLOCK_H
 
 using namespace cv;
