@@ -190,7 +190,7 @@ __global__
 void calEa_NP_kernel(float4 *Poses4, float2 *Poses2, float *Eas, const float2 Sf, const int2 P, const float2 normDim, const int2 imgDim,
 const int numPoses) {
   const int tIdx = threadIdx.x;
-  const int Idx = blockIdx.x * 256 + tIdx;
+  const int Idx = blockIdx.x * BLOCK_SIZE + tIdx;
 
   if (Idx >= numPoses)
     return;
