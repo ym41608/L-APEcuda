@@ -16,3 +16,4 @@ ver4. 160425
 
 ver4. 160428
   fix the step setting and restart setting
+  pre-time: 1.94 s, post-time: 26.6 s
