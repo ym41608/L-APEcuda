@@ -13,3 +13,6 @@ ver3. 160424 improve the traverse in finding maximum in preCal_kernel.cu
 ver4. 160425
   block size: 192, 8 8
   pre-time: 1.67 s, post-time: 26.7 s
+
+ver4. 160428
+  fix the step setting and restart setting

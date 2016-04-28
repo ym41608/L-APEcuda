@@ -7,8 +7,6 @@
 
 using namespace cv;
 
-void preCal(parameter *para, gpu::GpuMat &marker_d, gpu::GpuMat &img_d, const Mat &marker, const Mat &img, const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &delta, const float &tzMin, const float &tzMax, const bool &verbose);
-
-double calSigmaValue(const gpu::GpuMat &marker_d, const parameter &para, const bool &verbose);
+void preCal(parameter *para, gpu::GpuMat &marker_d, gpu::GpuMat &img_d, const Mat &marker, const Mat &img, const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &minDim, const float &tzMin, const float &tzMax, const float &delta, const bool &verbose);
 
 #endif

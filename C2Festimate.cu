@@ -357,7 +357,7 @@ const int numPoses) {
   float sumXi = 0; float sumYi = 0;
   float sumXiSqrd = 0; float sumYiSqrd = 0;
   float Xi, Yi;
-  float4 tmpp[SAMPLE_NUM];
+  //float4 tmpp[SAMPLE_NUM];
   for (int i = 0; i < SAMPLE_NUM; i++) {
     // calculate coordinate on camera image
     invz = 1 / (t8*const_Mcoor[i].x + t9*const_Mcoor[i].y + t11);
@@ -373,7 +373,7 @@ const int numPoses) {
     // accumulation for normalization
     Xi = YCrCb_const.x;
     Yi = YCrCb_tex.x;
-    tmpp[i] = YCrCb_tex;
+    //tmpp[i] = YCrCb_tex;
     sumXi += Xi;
     sumYi += Yi;
     sumXiSqrd += (Xi*Xi);
@@ -389,8 +389,16 @@ const int numPoses) {
   float faster = -meanX + sigXoversigY*meanY;
 
   for (int i = 0; i < SAMPLE_NUM; i++) {
+    // calculate coordinate on camera image
+    invz = 1 / (t8*const_Mcoor[i].x + t9*const_Mcoor[i].y + t11);
+    u = (t0*const_Mcoor[i].x + t1*const_Mcoor[i].y + t3) * invz;
+    v = (t4*const_Mcoor[i].x + t5*const_Mcoor[i].y + t7) * invz;
+  
+    // get value from constmem
     YCrCb_const = const_marker[i];
-    YCrCb_tex = tmpp[i];
+  
+    // get value from texture
+    YCrCb_tex = tex2D(tex_imgYCrCb, u, v);
     score += (2.852*abs(YCrCb_const.x - sigXoversigY*YCrCb_tex.x + faster) + abs(YCrCb_tex.y - YCrCb_const.y) + 1.264*abs(YCrCb_tex.z - YCrCb_const.z));
   }
   Eas[Idx] = score / (SAMPLE_NUM * 5.116);
@@ -465,8 +473,9 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
   // start
   const float factor = 1/1.511;
   int level = 0;
-  int2 c;
   thrust::host_vector<float> bestDists;
+  float originNumPoses;
+  float2 c = (photo)? make_float2(0.075, 0.15) : make_float2(0.05, 0.1);
   while (true) {
     level++;
     if (verbose)
@@ -476,6 +485,7 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
     if (verbose)
       cout << "----- Evaluate Ea, with " << numPoses << " poses -----" << endl;
     Eas.resize(numPoses);
+    originNumPoses = numPoses;
     calEa(&Poses4, &Poses2, &Eas, make_float2(para->Sfx, para->Sfy), make_int2(para->Px, para->Py), 
           make_float2(para->markerDimX, para->markerDimY), make_int2(para->iDimX, para->iDimY), photo, numPoses);
     
@@ -498,15 +508,7 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
     bool tooHighPercentage = getPoses(&Poses4, &Poses2, &Eas, bestEa, para->delta, &numPoses);
     
     // restart?
-    if (photo) {
-      c.x = 10000000;
-      c.y = 7500000;
-    } 
-    else {
-      c.x = 7500000;
-      c.y = 5000000;
-    }
-    if ((level==1) && ((tooHighPercentage && (bestEa > 0.05) && (numPoses < c.x)) || ((bestEa > 0.10) && (numPoses < c.y)) ) ) {
+    if ((level==1) && ((tooHighPercentage && (bestEa > c.x) && (originNumPoses < 7500000)) || ((bestEa > c.y) && (originNumPoses < 5000000)) ) ) {
       if (verbose)
         cout << "##### Restarting!!! change delta from " << para->delta << " to " << para->delta*0.9 << endl;
       para->shrinkNet(0.9);

@@ -35,7 +35,8 @@ double calSigmaValue(const gpu::GpuMat &marker_d, const parameter &para) {
 }
 
 void preCal(parameter *para, gpu::GpuMat &marker_d, gpu::GpuMat &img_d, const Mat &marker, const Mat &img, 
-            const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &delta, const float &tzMin, const float &tzMax, const bool &verbose) {
+            const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &minDim, const float &tzMin, const float &tzMax, 
+            const float &delta, const bool &verbose) {
   //cudaProfilerStart(); 
   // dim of images
   para->mDimX = marker.cols;
@@ -53,8 +54,8 @@ void preCal(parameter *para, gpu::GpuMat &marker_d, gpu::GpuMat &img_d, const Ma
   float wm = float(marker.cols);
   float hm = float(marker.rows);
   float minmDim = fmin(hm, wm);
-  para->markerDimX = wm / minmDim * 0.5;
-  para->markerDimY = hm / minmDim * 0.5;
+  para->markerDimX = wm / minmDim * minDim;
+  para->markerDimY = hm / minmDim * minDim;
   float minmarkerDim = fmin(para->markerDimX, para->markerDimY);
   para->tzMin = tzMin;
   para->tzMax = tzMax;
@@ -66,11 +67,12 @@ void preCal(parameter *para, gpu::GpuMat &marker_d, gpu::GpuMat &img_d, const Ma
   //bounds
   float m_tz = sqrt(tzMin*tzMax);
   float sqrt2 = sqrt(2);
+  float invtmp = 1.0 / sqrt2 / m_tz;
   para->delta = delta;
-  para->txS = delta/sqrt2/m_tz;
-  para->tyS = delta/sqrt2/m_tz;
-  para->tzS = delta/sqrt2/m_tz;
-  para->rxS = delta/sqrt2/m_tz;
+  para->txS = delta*invtmp*2*(minDim);
+  para->tyS = delta*invtmp*2*(minDim);
+  para->tzS = delta*invtmp;
+  para->rxS = delta*invtmp;
   para->rz0S = delta*sqrt2/m_tz;
   para->rz1S = delta*sqrt2/m_tz;
   

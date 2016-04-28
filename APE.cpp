@@ -10,8 +10,8 @@
 using namespace cv;
 using namespace std;
 
-void APE(float *ex_mat, const Mat &marker, const Mat &img, const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &delta, 
-         const float &tzMin, const float &tzMax, const bool photo, const bool verbose) {
+void APE(float *ex_mat, const Mat &marker, const Mat &img, const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &minDim, 
+         const float &tzMin, const float &tzMax, const float &delta, const bool &photo, const bool &verbose) {
   
   // allocate
   Timer time;
@@ -21,7 +21,7 @@ void APE(float *ex_mat, const Mat &marker, const Mat &img, const float &Sfx, con
   gpu::GpuMat img_d(img.rows, img.cols, CV_32FC4);
   
   // pre-calculation
-  preCal(&para, marker_d, img_d, marker, img, Sfx, Sfy, Px, Py, delta, tzMin, tzMax, verbose);
+  preCal(&para, marker_d, img_d, marker, img, Sfx, Sfy, Px, Py, minDim, tzMin, tzMax, delta, verbose);
   time.Pause();
   long long t1 = time.get_count();
   
