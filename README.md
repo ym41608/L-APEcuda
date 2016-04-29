@@ -14,6 +14,9 @@ ver4. 160425
   block size: 192, 8 8
   pre-time: 1.67 s, post-time: 26.7 s
 
-ver4. 160428
+ver4.1 160428
   fix the step setting and restart setting
   pre-time: 1.94 s, post-time: 26.6 s
+
+ver4.2 160429
+  fix the redundant calculation of steps of rz0 rz1 * tz_mid
