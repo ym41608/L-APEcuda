@@ -20,3 +20,9 @@ ver4.1 160428
 
 ver4.2 160429
   fix the redundant calculation of steps of rz0 rz1 * tz_mid
+
+ver5 160504
+  move to tx1, need to cudaDeviceSyn() after calEa
+  fix the location of Eas.resize()
+  add unbind texture in the end of the program
+  pre-time: 1.95 s, post-time: 16.8 s

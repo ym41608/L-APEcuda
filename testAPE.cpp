@@ -66,7 +66,7 @@ int main() {
   drawCoordinate(ex_mat, 1000, 1000, 400, 300, img);
   //imshow("img", img);
   //waitKey(0);
-  imwrite("img/result_150.png", img);
+  imwrite("img/result.png", img);
   delete[] ex_mat;
   return 0;
 }

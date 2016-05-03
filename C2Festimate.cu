@@ -487,9 +487,11 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
     originNumPoses = numPoses;
     calEa(&Poses4, &Poses2, &Eas, make_float2(para->Sfx, para->Sfy), make_int2(para->Px, para->Py), 
           make_float2(para->markerDimX, para->markerDimY), make_int2(para->iDimX, para->iDimY), photo, numPoses);
+    cudaDeviceSynchronize(); 
     
     // findMin
-    thrust::device_vector<float>::iterator iter = thrust::min_element(Eas.begin(), Eas.end());
+    thrust::device_vector<float>::iterator iter;
+    iter = thrust::min_element(Eas.begin(), Eas.end());
     float bestEa = *iter;
     if (verbose)
       std::cout << "$$$ bestEa = " << bestEa << endl;
@@ -499,6 +501,7 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
     if ( (bestEa < 0.005) || ((level > 4) && (bestEa < 0.015)) || ((level > 3) && (bestEa > mean(bestDists))) || (level > 7) ) {
       const int idx = iter - Eas.begin();
       getExMat(ex_mat, Poses4[idx], Poses2[idx]);
+      cudaUnbindTexture(&tex_imgYCrCb);
       //cudaProfilerStop();
       break;
     }
