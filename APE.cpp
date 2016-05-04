@@ -12,7 +12,8 @@ using namespace std;
 
 void APE(float *ex_mat, const Mat &marker, const Mat &img, const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &minDim, 
          const float &tzMin, const float &tzMax, const float &delta, const bool &photo, const bool &verbose) {
-  
+  gpu::setDevice(0);
+  gpu::resetDevice();
   // allocate
   Timer time;
   time.Reset(); time.Start();

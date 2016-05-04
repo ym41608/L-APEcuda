@@ -26,3 +26,9 @@ ver5 160504
   fix the location of Eas.resize()
   add unbind texture in the end of the program
   pre-time: 1.95 s, post-time: 16.8 s
+
+ver5.1 160504
+  reset the device at the top of APE.cpp
+  fix min/max to fminf/fmaxf in C2F
+  reduce the block size per SM in calEa kernel
+  post-time: 16.4 s

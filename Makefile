@@ -1,6 +1,7 @@
 CC=g++
 NVCC=nvcc
-CFLAGS=-std=c++11 -g -O3
+CFLAGS=-std=c++11 -O3
+CFLAGS1=-O3
 INCS=-I/usr/local/cuda/include
 LIBS=-L/usr/local/cuda/lib -lcudart
 
@@ -19,16 +20,16 @@ preCal.o: preCal.cpp preCal.h parameter.h preCal_kernel.h
 	$(CC) -c $(CFLAGS) preCal.cpp $(INCS)
 
 preCal_kernel.o: preCal_kernel.cu preCal_kernel.h device_common.h
-	$(NVCC) -c -O3 preCal_kernel.cu
+	$(NVCC) -c $(CFLAGS1) preCal_kernel.cu
 
 C2Festimate.o: C2Festimate.cu C2Festimate.h parameter.h device_common.h getPoses.h expandPoses.h
-	$(NVCC) -c -O3 C2Festimate.cu
+	$(NVCC) -c $(CFLAGS1) C2Festimate.cu
 
 getPoses.o: getPoses.cu getPoses.h device_common.h
-	$(NVCC) -c -O3 getPoses.cu
+	$(NVCC) -c $(CFLAGS1) getPoses.cu
 
 expandPoses.o: expandPoses.cu expandPoses.h parameter.h device_common.h
-	$(NVCC) -c -O3 expandPoses.cu
+	$(NVCC) -c $(CFLAGS1) expandPoses.cu
 
 clean: 
 	rm -rf *.o testAPE
