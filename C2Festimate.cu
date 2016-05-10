@@ -12,7 +12,6 @@
 #include "getPoses.h"
 #include "expandPoses.h"
 #include "device_common.h"
-//#include <cuda_profiler_api.h>
 
 using namespace cv;
 using namespace std;
@@ -503,7 +502,6 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
       const int idx = iter - Eas.begin();
       getExMat(ex_mat, Poses4[idx], Poses2[idx]);
       cudaUnbindTexture(&tex_imgYCrCb);
-      //cudaProfilerStop();
       break;
     }
     
