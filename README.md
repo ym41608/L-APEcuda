@@ -32,3 +32,6 @@ ver5.1 160504
   fix min/max to fminf/fmaxf in C2F
   reduce the block size per SM in calEa kernel
   post-time: 16.4 s
+
+ver5.2 160510
+  fix normalize factor calculation

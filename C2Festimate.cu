@@ -380,8 +380,8 @@ const int numPoses) {
   }
 
   // normalization parameter
-  float sigX = sqrt((sumXiSqrd - (sumXi*sumXi) * invSAMPLE_NUM) * invSAMPLE_NUM) + 0.0000001;
-  float sigY = sqrt((sumYiSqrd - (sumYi*sumYi) * invSAMPLE_NUM) * invSAMPLE_NUM) + 0.0000001;
+  float sigX = sqrt(fmaxf((sumXiSqrd - (sumXi*sumXi) * invSAMPLE_NUM), 0.0) * invSAMPLE_NUM) + 0.0000001;
+  float sigY = sqrt(fmaxf((sumYiSqrd - (sumYi*sumYi) * invSAMPLE_NUM), 0.0) * invSAMPLE_NUM) + 0.0000001;
   float meanX = sumXi * invSAMPLE_NUM;
   float meanY = sumYi * invSAMPLE_NUM;
   float sigXoversigY = sigX / sigY;
