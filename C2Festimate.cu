@@ -191,7 +191,7 @@ const int numPoses) {
   const int tIdx = threadIdx.x;
   const int Idx = blockIdx.x * BLOCK_SIZE + tIdx;
 
-  if (Idx >= numPoses || tIdx >= BLOCK_SIZE)
+  if (Idx >= numPoses)
     return;
 
   // calculate transformation
@@ -283,7 +283,7 @@ const int numPoses) {
   const int tIdx = threadIdx.x;
   const int Idx = blockIdx.x * BLOCK_SIZE + tIdx;
 
-  if (Idx >= numPoses || tIdx >= BLOCK_SIZE)
+  if (Idx >= numPoses)
     return;
 
   // calculate transformation
@@ -356,7 +356,6 @@ const int numPoses) {
   float sumXi = 0; float sumYi = 0;
   float sumXiSqrd = 0; float sumYiSqrd = 0;
   float Xi, Yi;
-  //float4 tmpp[SAMPLE_NUM];
   for (int i = 0; i < SAMPLE_NUM; i++) {
     // calculate coordinate on camera image
     invz = 1 / (t8*const_Mcoor[i].x + t9*const_Mcoor[i].y + t11);
@@ -372,7 +371,6 @@ const int numPoses) {
     // accumulation for normalization
     Xi = YCrCb_const.x;
     Yi = YCrCb_tex.x;
-    //tmpp[i] = YCrCb_tex;
     sumXi += Xi;
     sumYi += Yi;
     sumXiSqrd += (Xi*Xi);
@@ -407,11 +405,11 @@ void calEa(thrust::device_vector<float4> *Poses4, thrust::device_vector<float2> 
     const float2 &Sf, const int2 &P, const float2 &markerDim, const int2 &iDim, const bool &photo, const int &numPoses) {
   const int BLOCK_NUM = (numPoses - 1) / BLOCK_SIZE + 1;
   if (photo) {
-    calEa_P_kernel << < BLOCK_NUM, 768 >> > (thrust::raw_pointer_cast(Poses4->data()), thrust::raw_pointer_cast(Poses2->data()), 
+    calEa_P_kernel << < BLOCK_NUM, 256 >> > (thrust::raw_pointer_cast(Poses4->data()), thrust::raw_pointer_cast(Poses2->data()), 
       thrust::raw_pointer_cast(Eas->data()), Sf, P, markerDim, iDim, numPoses);
   }
   else {
-    calEa_NP_kernel << < BLOCK_NUM, 768 >> > (thrust::raw_pointer_cast(Poses4->data()), thrust::raw_pointer_cast(Poses2->data()), 
+    calEa_NP_kernel << < BLOCK_NUM, 256 >> > (thrust::raw_pointer_cast(Poses4->data()), thrust::raw_pointer_cast(Poses2->data()), 
       thrust::raw_pointer_cast(Eas->data()), Sf, P, markerDim, iDim, numPoses);
   }
 }

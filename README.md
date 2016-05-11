@@ -35,3 +35,4 @@ ver5.1 160504
 
 ver5.2 160510
   fix normalize factor calculation
+  fix blocksize for calEa to 256
