@@ -1,7 +1,7 @@
 CC=g++
 NVCC=nvcc
 CFLAGS=-std=c++11 -O3
-CFLAGS1=-O3
+CFLAGS1=-O3 -arch=sm_53
 INCS=-I/usr/local/cuda/include
 LIBS=-L/usr/local/cuda/lib -lcudart
 
