@@ -11,7 +11,7 @@
 using namespace cv;
 using namespace std;
 
-void APE(float *ex_mat, const Mat &marker, const Mat &img, const float &Sfx, const float &Sfy, const int &Px, const int &Py, const float &minDim, 
+void APE(float *ex_mat, const Mat &marker, const Mat &img, const float &Sfx, const float &Sfy, const float &Px, const float &Py, const float &minDim, 
          const float &tzMin, const float &tzMax, const float &delta, const bool &photo, const bool &verbose) {
   cudaProfilerStart();
   gpu::setDevice(0);

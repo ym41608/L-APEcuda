@@ -36,3 +36,9 @@ ver5.1 160504
 ver5.2 160510
   fix normalize factor calculation
   fix blocksize for calEa to 256
+  
+ver6 160517
+  change the order of set construction
+  change Px Py to float
+  change verbose
+  GTX770: pre: 0.4s post: 1.8s

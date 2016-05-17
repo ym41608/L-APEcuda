@@ -6,6 +6,9 @@
 #include <thrust/remove.h>
 #include <thrust/device_vector.h>
 #include "device_common.h"
+#include <iostream>
+
+using namespace std;
 
 struct isLessTest { 
     __host__ __device__ 
@@ -45,8 +48,10 @@ bool getPoses(thrust::device_vector<float4>* Poses4, thrust::device_vector<float
   while (true) {
     isLess_kernel <<< BLOCK_NUM, BLOCK_SIZE >>> (thrust::raw_pointer_cast(isEasLess.data()), thrust::raw_pointer_cast(Eas->data()), minEa, Eas->size());
     count = thrust::count(isEasLess.begin(), isEasLess.end(), true);
-    if (first)
-      tooHighPercentage = (count / *numPoses > 0.1);
+    if (first) {
+      float percentage = count / *numPoses;
+      tooHighPercentage = (percentage > 0.1);
+    }
     if (count < 27000) {
       // cut poses4 and poses2
       typedef thrust::tuple< thrust::device_vector< float4 >::iterator, thrust::device_vector< float2 >::iterator, thrust::device_vector< bool >::iterator > TupleIt;

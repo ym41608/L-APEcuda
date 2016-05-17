@@ -102,9 +102,9 @@ void createSet_kernel(float4* Poses4, float2* Poses2, const int start, const int
   const int nrz0 = num.w;
   
   const int idrz0 = Idx % nrz0;
-  const int idty = (Idx / nrz0) % nty;
-  const int idtx = (Idx / (nrz0 * nty)) % ntx;
-  const int idrz1 = (Idx / (nrz0 * nty * ntx)) % nrz1;
+  const int idrz1 = (Idx / nrz0) % nrz1;
+  const int idty = (Idx / (nrz0 * nrz1)) % nty;
+  const int idtx = (Idx / (nrz0 * nrz1 * nty)) % ntx;
   
   float4 p4;
   float2 p2;
@@ -186,7 +186,7 @@ void createSet(thrust::device_vector<float4> *Poses4, thrust::device_vector<floa
 
 //{ --- for calculate Ea --- //
 __global__
-void calEa_NP_kernel(float4 *Poses4, float2 *Poses2, float *Eas, const float2 Sf, const int2 P, const float2 normDim, const int2 imgDim,
+void calEa_NP_kernel(float4 *Poses4, float2 *Poses2, float *Eas, const float2 Sf, const float2 P, const float2 normDim, const int2 imgDim,
 const int numPoses) {
   const int tIdx = threadIdx.x;
   const int Idx = blockIdx.x * BLOCK_SIZE + tIdx;
@@ -278,7 +278,7 @@ const int numPoses) {
 }
 
 __global__
-void calEa_P_kernel(float4 *Poses4, float2 *Poses2, float *Eas, const float2 Sf, const int2 P, const float2 normDim, const int2 imgDim,
+void calEa_P_kernel(float4 *Poses4, float2 *Poses2, float *Eas, const float2 Sf, const float2 P, const float2 normDim, const int2 imgDim,
 const int numPoses) {
   const int tIdx = threadIdx.x;
   const int Idx = blockIdx.x * BLOCK_SIZE + tIdx;
@@ -402,7 +402,7 @@ const int numPoses) {
 }
   
 void calEa(thrust::device_vector<float4> *Poses4, thrust::device_vector<float2> *Poses2, thrust::device_vector<float> *Eas, 
-    const float2 &Sf, const int2 &P, const float2 &markerDim, const int2 &iDim, const bool &photo, const int &numPoses) {
+    const float2 &Sf, const float2 &P, const float2 &markerDim, const int2 &iDim, const bool &photo, const int &numPoses) {
   const int BLOCK_NUM = (numPoses - 1) / BLOCK_SIZE + 1;
   if (photo) {
     calEa_P_kernel << < BLOCK_NUM, 256 >> > (thrust::raw_pointer_cast(Poses4->data()), thrust::raw_pointer_cast(Poses2->data()), 
@@ -476,14 +476,14 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
   while (true) {
     level++;
     if (verbose)
-      cout << endl << "***" << endl << "*** level " << level << endl << "***" << endl;
+      cout << "- level " << level << " - delta " << para->delta << ", ";
     
     // calEa
     if (verbose)
-      cout << "----- Evaluate Ea, with " << numPoses << " poses -----" << endl;
+      cout << "Number of Poses " << numPoses << ", ";
     Eas.resize(numPoses);
     originNumPoses = numPoses;
-    calEa(&Poses4, &Poses2, &Eas, make_float2(para->Sfx, para->Sfy), make_int2(para->Px, para->Py), 
+    calEa(&Poses4, &Poses2, &Eas, make_float2(para->Sfx, para->Sfy), make_float2(para->Px, para->Py), 
           make_float2(para->markerDimX, para->markerDimY), make_int2(para->iDimX, para->iDimY), photo, numPoses);
     cudaDeviceSynchronize(); 
     
@@ -492,7 +492,7 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
     iter = thrust::min_element(Eas.begin(), Eas.end());
     float bestEa = *iter;
     if (verbose)
-      std::cout << "$$$ bestEa = " << bestEa << endl;
+      std::cout << "Best Ea " << bestEa << endl;
     bestDists.push_back(bestEa);
     
     // terminate
@@ -508,8 +508,6 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
     
     // restart?
     if ((level==1) && ((tooHighPercentage && (bestEa > c.x) && (originNumPoses < 7500000)) || ((bestEa > c.y) && (originNumPoses < 5000000)) ) ) {
-      if (verbose)
-        cout << "##### Restarting!!! change delta from " << para->delta << " to " << para->delta*0.9 << endl;
       para->shrinkNet(0.9);
       createSet(&Poses4, &Poses2, *para);
       numPoses = Poses4.size();
@@ -519,8 +517,6 @@ void C2Festimate(float *ex_mat, const gpu::PtrStepSz<float3> &marker_d, const gp
     else {
       // expandPoses
       expandPoses(&Poses4, &Poses2, factor, para, &numPoses);
-      if (verbose)
-        cout << "##### Continuing!!! prevDelta = " << para->delta << ", newDelta = " << para->delta*factor << endl;
     }
     
     // re-sample
