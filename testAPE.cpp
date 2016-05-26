@@ -62,7 +62,7 @@ int main() {
   
   float *ex_mat = new float[12];
   
-  APE(ex_mat, marker, img, 800, 800, 319.5, 319.5, 0.5, 3.0, 8.5, 0.21, false, true);
+  APE(ex_mat, marker, img, 800, 800, 319.5, 319.5, 0.5, 3.0, 8.5, 0.25, false, true);
   drawCoordinate(ex_mat, 800, 800, 319.5, 319.5, img);
   //imshow("img", img);
   //waitKey(0);
