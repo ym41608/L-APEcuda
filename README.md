@@ -42,3 +42,6 @@ ver6 160517
   change Px Py to float
   change verbose
   GTX770: pre: 0.4s post: 1.8s
+  
+ver6.1
+  parse the input in main
