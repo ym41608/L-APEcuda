@@ -204,7 +204,7 @@ const int numPoses) {
   tx = Poses4[Idx].x;
   ty = Poses4[Idx].y;
   tz = Poses4[Idx].z;
-  rx = Poses4[Idx].w;
+  rx = Poses4[Idx].w + 3.1415926;
   rz0 = Poses2[Idx].x;
   rz1 = Poses2[Idx].y;
 
@@ -224,9 +224,9 @@ const int numPoses) {
   t0 = Sf.x*r11 + P.x*r31;
   t1 = Sf.x*r12 + P.x*r32;
   t3 = Sf.x*tx + P.x*tz;
-  t4 = (-Sf.y)*r21 + P.y*r31;
-  t5 = (-Sf.y)*r22 + P.y*r32;
-  t7 = (-Sf.y)*ty + P.y*tz;
+  t4 = Sf.y*r21 + P.y*r31;
+  t5 = Sf.y*r22 + P.y*r32;
+  t7 = Sf.y*ty + P.y*tz;
   t8 = r31;
   t9 = r32;
   t11 = tz;
@@ -296,7 +296,7 @@ const int numPoses) {
   tx = Poses4[Idx].x;
   ty = Poses4[Idx].y;
   tz = Poses4[Idx].z;
-  rx = Poses4[Idx].w;
+  rx = Poses4[Idx].w + 3.1415926;
   rz0 = Poses2[Idx].x;
   rz1 = Poses2[Idx].y;
 
@@ -316,9 +316,9 @@ const int numPoses) {
   t0 = Sf.x*r11 + P.x*r31;
   t1 = Sf.x*r12 + P.x*r32;
   t3 = Sf.x*tx + P.x*tz;
-  t4 = (-Sf.y)*r21 + P.y*r31;
-  t5 = (-Sf.y)*r22 + P.y*r32;
-  t7 = (-Sf.y)*ty + P.y*tz;
+  t4 = Sf.y*r21 + P.y*r31;
+  t5 = Sf.y*r22 + P.y*r32;
+  t7 = Sf.y*ty + P.y*tz;
   t8 = r31;
   t9 = r32;
   t11 = tz;
@@ -429,20 +429,20 @@ float mean(thrust::host_vector<float> &bestDists) {
 }
 
 void getExMat(float *ex_mat, const float4 &P4, const float2 &P2) {
-  float rx = P4.w;
+  float rx = P4.w + 3.1415926;
   float rz0 = P2.x;
   float rz1 = P2.y;
   ex_mat[0] =  cos(rz0)*cos(rz1) - sin(rz0)*cos(rx)*sin(rz1); //0
 	ex_mat[1] = -cos(rz0)*sin(rz1) - sin(rz0)*cos(rx)*cos(rz1); //1
-	ex_mat[2] = -(sin(rz0)*sin(rx)); //2
+	ex_mat[2] = (sin(rz0)*sin(rx)); //2
   ex_mat[3] = P4.x;
 	ex_mat[4] =  sin(rz0)*cos(rz1) + cos(rz0)*cos(rx)*sin(rz1); //4
 	ex_mat[5] = -sin(rz0)*sin(rz1) + cos(rz0)*cos(rx)*cos(rz1); //5
-	ex_mat[6] = -(-cos(rz0)*sin(rx)); //6
+	ex_mat[6] = (-cos(rz0)*sin(rx)); //6
   ex_mat[7] = P4.y;
 	ex_mat[8] =  sin(rx)*sin(rz1); //8
 	ex_mat[9] =  sin(rx)*cos(rz1); //9
-	ex_mat[10] = -(cos(rx)); //10
+	ex_mat[10] = (cos(rx)); //10
   ex_mat[11] = P4.z;
 }
 

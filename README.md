@@ -45,3 +45,6 @@ ver6 160517
   
 ver6.1
   parse the input in main
+  
+ver6.2
+  change coordinate definition to new mode
